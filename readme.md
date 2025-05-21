@@ -34,7 +34,27 @@ This is a proof-of-concept (PoC) to demonstrate how **HashiCorp Vault Dynamic Se
 ```bash
 vault secrets enable database
 ```
-2️⃣ Create a Dynamic Role
+2️⃣ Configure the PostgreSQL Database Connection
+
+Configure Vault with your Render PostgreSQL connection details so Vault can create users dynamically:
+```bash
+vault write database/config/test_db_v3dq \
+    plugin_name=postgresql-database-plugin \
+    allowed_roles="my-role" \
+    connection_url="postgresql://{{username}}:{{password}}@dpg-d0lrppqdbo4c73c7nr2g-a.oregon-postgres.render.com:5432/test_db_v3dq?sslmode=require" \
+    username="test_db_v3dq_user" \
+    password="<>"
+
+```
+- plugin_name: Vault's PostgreSQL plugin.
+
+- allowed_roles: Roles allowed to use this DB config.
+
+- connection_url: Connection string template, Vault replaces {{username}} and {{password}}.
+
+- username and password: Admin credentials for Render Postgres (used by Vault to create roles).
+
+3️⃣ Create a Dynamic Role for dynamic cred generation
 This role tells Vault how to create temporary database users with specific privileges.
 
 ```bash
@@ -44,6 +64,14 @@ vault write database/roles/readonly-role \
     default_ttl="1h" \
     max_ttl="24h"
 ```
+- db_name: The Vault database config name (from step 2).
+
+- creation_statements: SQL Vault runs to create dynamic users.
+
+- default_ttl: Default lease duration for generated credentials (1 hour).
+
+- max_ttl: Maximum lease duration allowed (24 hours).
+
 ```bash
 
 3️⃣ Vault Policy to Access Dynamic Credentials
@@ -81,11 +109,12 @@ username           v-token-readonly-role-xYZ
 ```
 
 🔒 Benefits of Dynamic Secrets
-Time-bound: Auto-expire after TTL.
 
-Least Privilege: Each role has limited permissions.
+- Time-bound: Auto-expire after TTL.
 
-No Secret Rotation Needed: Vault auto-generates credentials on demand.
+- Least Privilege: Each role has limited permissions.
 
-Auditability: Every credential issue is logged.
+- No Secret Rotation Needed: Vault auto-generates credentials on demand.
+
+- Auditability: Every credential issue is logged.
 
