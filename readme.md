@@ -1,6 +1,6 @@
 # 🔐 Vault Dynamic Secrets POC with HCP Vault & Render PostgreSQL
 
-This is a proof-of-concept (PoC) to demonstrate how **HashiCorp Vault Dynamic Secrets** can be used with a **managed PostgreSQL database** hosted on [Render.com](https://render.com/). The PoC uses [HCP Vault Cloud] (https://portal.cloud.hashicorp.com/) to dynamically generate short-lived database credentials, showcasing secure access without hardcoding static credentials.
+This is a proof-of-concept (PoC) to demonstrate how **HashiCorp Vault Dynamic Secrets** can be used with a **managed PostgreSQL database** hosted on [Render.com](https://render.com/). The PoC uses [HCP Vault Cloud](https://portal.cloud.hashicorp.com/) to dynamically generate short-lived database credentials, showcasing secure access without hardcoding static credentials.
 
 ## 🧩 Components
 
