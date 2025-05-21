@@ -43,6 +43,7 @@ vault write database/roles/readonly-role \
     creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT CONNECT ON DATABASE <DB_NAME> TO \"{{name}}\";" \
     default_ttl="1h" \
     max_ttl="24h"
+```
 ```bash
 
 3️⃣ Vault Policy to Access Dynamic Credentials
@@ -60,7 +61,7 @@ Apply the policy:
 vault policy write db-readonly policy.hcl
 ```
 
-4.4️⃣ Fetch Dynamic Credentials
+4️⃣ Fetch Dynamic Credentials
 Use the token to fetch dynamic DB credentials:
 ```bash
 VAULT_TOKEN=<TOKEN> vault read database/creds/readonly-role
