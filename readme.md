@@ -75,12 +75,34 @@ vault write database/roles/readonly-role \
 ```bash
 
 3️⃣ Vault Policy to Access Dynamic Credentials
-Create a Vault policy to allow an application or user to retrieve credentials:
+🔐 Minimum Vault Policy (db-minimal-policy.hcl)
 ```bash
-# policy.hcl
-path "database/creds/readonly-role" {
+# Allow managing the specific database connection config
+path "database/config/test_db_v3dq" {
+  capabilities = ["create", "update", "read"]
+}
+
+# Allow managing just the role used to generate credentials
+path "database/roles/my-role" {
+  capabilities = ["create", "update", "read"]
+}
+
+# Allow reading credentials (used at runtime by the app)
+path "database/creds/my-role" {
   capabilities = ["read"]
 }
+```
+```bash
+echo 'path "database/config/test_db_v3dq" {
+  capabilities = ["create", "update", "read"]
+}
+path "database/roles/my-role" {
+  capabilities = ["create", "update", "read"]
+}
+path "database/creds/my-role" {
+  capabilities = ["read"]
+}' > db-minimal-policy.hcl
+
 ```
 
 Apply the policy:
